@@ -1,0 +1,114 @@
+<style>
+  @media print {
+    @page {
+      size: A4;
+      margin: 20mm;
+    }
+    body {
+      background-color: white !important;
+    }
+    .print-area, .print-area * {
+      visibility: visible;
+    }
+    .print-area {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    .print-controls {
+      display: none !important;
+    }
+    .report-paper {
+      box-shadow: none !important;
+      border: none !important;
+      margin: 0 !important;
+      max-width: 100% !important;
+    }
+  }
+</style>
+
+<div class="bg-slate-100 min-h-screen py-8">
+  <div class="container mx-auto px-4">
+    <!-- Print Controls -->
+    <div class="print-controls mb-8 flex items-center justify-between">
+      <a routerLink="/admin/submitted-reports" class="inline-flex items-center px-4 py-2 border border-slate-300 text-sm font-medium rounded-md shadow-sm text-slate-700 bg-white hover:bg-slate-50">
+        <i class="fas fa-arrow-left mr-2"></i>
+        Back to Report List
+      </a>
+      <button (click)="printReport()" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700">
+        <i class="fas fa-download mr-2"></i>Download PDF
+      </button>
+    </div>
+
+    @if (report(); as r) {
+      <div class="print-area">
+        <div class="report-paper bg-white shadow-lg rounded-sm p-12 mx-auto" style="width: 210mm; min-height: 297mm;">
+          <!-- Report Header -->
+          <header class="pb-6 mb-8 border-b-2 border-slate-300">
+            <div class="flex justify-between items-start">
+               <div class="flex items-center space-x-4">
+                @if(clinic().logoUrl) {
+                  <img [src]="clinic().logoUrl" alt="Clinic Logo" class="max-h-16">
+                }
+                <div>
+                  <h2 class="text-2xl font-bold text-slate-800">Ultrasound Report</h2>
+                  <p class="text-sm text-slate-500">Confidential Medical Document</p>
+                </div>
+              </div>
+              <div class="text-right">
+                <p class="font-semibold text-slate-700">{{ clinic().name }}</p>
+                <p class="text-xs text-slate-500">{{ clinic().address }}</p>
+                <p class="text-xs text-slate-500">{{ clinic().phone }}</p>
+              </div>
+            </div>
+          </header>
+
+          <!-- Patient & Study Details -->
+          <section class="mb-8">
+            <div class="grid grid-cols-2 gap-x-8 gap-y-2">
+              <div><strong class="font-semibold text-slate-700 w-28 inline-block">Patient:</strong> {{ r.patient.name }}</div>
+              <div><strong class="font-semibold text-slate-700 w-28 inline-block">Exam Type:</strong> {{ r.study.examType }}</div>
+              <div><strong class="font-semibold text-slate-700 w-28 inline-block">Patient ID:</strong> {{ r.patient.patientId }}</div>
+              <div><strong class="font-semibold text-slate-700 w-28 inline-block">Study Date:</strong> {{ r.study.studyDate }}</div>
+              <div><strong class="font-semibold text-slate-700 w-28 inline-block">DOB:</strong> {{ r.patient.dob }}</div>
+              <div><strong class="font-semibold text-slate-700 w-28 inline-block">Referring MD:</strong> {{ r.study.referringPhysician }}</div>
+            </div>
+          </section>
+
+          <!-- Report Body -->
+          <main class="text-slate-800 text-sm space-y-6">
+            <section>
+              <h3 class="font-bold text-base mb-2 border-b pb-1">FINDINGS</h3>
+              <p class="whitespace-pre-wrap">{{ r.findings || 'No findings entered.' }}</p>
+            </section>
+            <section>
+              <h3 class="font-bold text-base mb-2 border-b pb-1">IMPRESSION</h3>
+              <p class="whitespace-pre-wrap">{{ r.impression || 'No impression entered.' }}</p>
+            </section>
+            <section>
+              <h3 class="font-bold text-base mb-2 border-b pb-1">RECOMMENDATIONS</h3>
+              <p class="whitespace-pre-wrap">{{ r.recommendations || 'No recommendations entered.' }}</p>
+            </section>
+          </main>
+
+          <!-- Report Footer -->
+          <footer class="pt-8 mt-auto text-center text-xs text-slate-400">
+            <div class="border-t pt-4">
+              <p>Electronically signed on {{ r.lastSaved | date:'short' }}</p>
+              <p>Page 1 of 1</p>
+            </div>
+          </footer>
+        </div>
+      </div>
+    } @else {
+      <div class="bg-white p-12 rounded-lg shadow-md text-center">
+        <i class="fas fa-exclamation-triangle text-4xl text-red-500"></i>
+        <h2 class="mt-4 text-xl font-bold text-slate-800">Report Not Found</h2>
+        <p class="mt-2 text-slate-600">The requested report could not be found. It may have been moved or deleted.</p>
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,108 @@
+<style>
+  @media print {
+    @page {
+      size: A4;
+      margin: 20mm;
+    }
+    body * {
+      visibility: hidden;
+    }
+    .print-area, .print-area * {
+      visibility: visible;
+    }
+    .print-area {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    .print-controls {
+      display: none;
+    }
+    .report-paper {
+      box-shadow: none !important;
+      border: none !important;
+    }
+  }
+</style>
+
+<div class="flex flex-col items-center">
+  <div class="print-controls w-full max-w-4xl mb-8">
+    <div class="bg-white p-4 rounded-lg shadow-md flex items-center justify-between">
+      <div class="flex items-center space-x-4">
+        <span class="text-sm font-medium text-slate-700">Print Options:</span>
+        <div class="flex items-center">
+          <input id="toggle-headers" type="checkbox" [checked]="showHeaders()" (change)="toggleHeaders()" class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+          <label for="toggle-headers" class="ml-2 block text-sm text-gray-900">Show Header/Footer</label>
+        </div>
+      </div>
+      <button (click)="printReport()" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+        <i class="fas fa-download mr-2"></i>Download PDF
+      </button>
+    </div>
+    <p class="text-xs text-slate-500 text-center mt-2">Paper size, margins, and other settings can be adjusted in the print dialog.</p>
+  </div>
+
+
+  <div class="print-area w-full">
+    <div class="report-paper bg-white shadow-lg rounded-sm p-12 mx-auto" style="width: 210mm; min-height: 297mm;">
+      <!-- Report Header -->
+      <header [class.hidden]="!showHeaders()" class="pb-6 mb-6 border-b-2 border-slate-300">
+        <div class="flex justify-between items-start">
+          <div class="flex items-center space-x-4">
+             @if(clinic().logoUrl) {
+              <img [src]="clinic().logoUrl" alt="Clinic Logo" class="max-h-16">
+            }
+            <div>
+              <h2 class="text-2xl font-bold text-slate-800">Ultrasound Report</h2>
+              <p class="text-sm text-slate-500">Confidential Medical Document</p>
+            </div>
+          </div>
+          <div class="text-right">
+            <p class="font-semibold text-slate-700">{{ clinic().name }}</p>
+            <p class="text-xs text-slate-500">{{ clinic().address }}</p>
+            <p class="text-xs text-slate-500">{{ clinic().phone }}</p>
+          </div>
+        </div>
+      </header>
+
+      <!-- Patient & Study Details -->
+      <section class="mb-6">
+        <div class="grid grid-cols-2 gap-x-8 gap-y-2">
+          <div><strong class="font-semibold text-slate-700 w-28 inline-block">Patient:</strong> {{ report().patient.name }}</div>
+          <div><strong class="font-semibold text-slate-700 w-28 inline-block">Exam Type:</strong> {{ report().study.examType }}</div>
+          <div><strong class="font-semibold text-slate-700 w-28 inline-block">Patient ID:</strong> {{ report().patient.patientId }}</div>
+          <div><strong class="font-semibold text-slate-700 w-28 inline-block">Study Date:</strong> {{ report().study.studyDate }}</div>
+          <div><strong class="font-semibold text-slate-700 w-28 inline-block">DOB:</strong> {{ report().patient.dob }}</div>
+          <div><strong class="font-semibold text-slate-700 w-28 inline-block">Referring MD:</strong> {{ report().study.referringPhysician }}</div>
+        </div>
+      </section>
+
+      <!-- Report Body -->
+      <main class="text-slate-800 text-sm space-y-6">
+        <section>
+          <h3 class="font-bold text-base mb-2 border-b pb-1">FINDINGS</h3>
+          <p class="whitespace-pre-wrap">{{ report().findings || 'No findings entered.' }}</p>
+        </section>
+        <section>
+          <h3 class="font-bold text-base mb-2 border-b pb-1">IMPRESSION</h3>
+          <p class="whitespace-pre-wrap">{{ report().impression || 'No impression entered.' }}</p>
+        </section>
+        <section>
+          <h3 class="font-bold text-base mb-2 border-b pb-1">RECOMMENDATIONS</h3>
+          <p class="whitespace-pre-wrap">{{ report().recommendations || 'No recommendations entered.' }}</p>
+        </section>
+      </main>
+
+       <!-- Report Footer -->
+      <footer [class.hidden]="!showHeaders()" class="pt-8 mt-auto text-center text-xs text-slate-400">
+        <div class="border-t pt-4">
+          <p>Electronically signed by Sonographer Name on {{ report().study.studyDate }}</p>
+          <p>Page 1 of 1</p>
+        </div>
+      </footer>
+    </div>
+  </div>
+</div>

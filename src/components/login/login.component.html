@@ -1,0 +1,47 @@
+<div class="flex min-h-screen items-center justify-center bg-slate-100">
+  <div class="w-full max-w-md space-y-8 p-10 bg-white rounded-xl shadow-lg">
+    <div>
+      <div class="flex items-center justify-center space-x-3">
+        <i class="fas fa-wave-square text-4xl text-blue-600"></i>
+        <h1 class="text-3xl font-bold text-slate-800">Ultrasound Report Studio</h1>
+      </div>
+      <h2 class="mt-6 text-center text-xl font-semibold text-slate-700">Admin Portal</h2>
+    </div>
+    <form class="mt-8 space-y-6" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <div class="rounded-md shadow-sm -space-y-px">
+        <div>
+          <label for="email-address" class="sr-only">Email address</label>
+          <input id="email-address" formControlName="email" name="email" type="email" required class="relative block w-full appearance-none rounded-t-md border border-slate-300 bg-slate-100 px-3 py-2 text-slate-500 placeholder-slate-500 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm" placeholder="Email address">
+        </div>
+        <div>
+          <label for="password" class="sr-only">Password</label>
+          <input id="password" formControlName="password" name="password" type="password" autocomplete="current-password" required class="relative block w-full appearance-none rounded-b-md border border-slate-300 px-3 py-2 text-slate-900 placeholder-slate-500 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm" placeholder="Password">
+        </div>
+      </div>
+
+      @if (error()) {
+        <div class="bg-red-50 border-l-4 border-red-400 p-3 my-2 rounded-r-lg">
+          <p class="text-sm text-red-700">{{ error() }}</p>
+        </div>
+      }
+
+      <div>
+        <button type="submit" [disabled]="isLoggingIn()" class="group relative flex w-full justify-center rounded-md border border-transparent bg-blue-600 py-2 px-4 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:bg-blue-300">
+          @if (isLoggingIn()) {
+            <i class="fas fa-spinner fa-spin h-5 w-5 text-white"></i>
+          } @else {
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+              <i class="fas fa-lock h-5 w-5 text-blue-500 group-hover:text-blue-400"></i>
+            </span>
+            Sign in
+          }
+        </button>
+      </div>
+    </form>
+     <p class="text-center text-sm text-slate-500">
+      <a routerLink="/report" class="font-medium text-blue-600 hover:text-blue-500">
+        Return to Report Editor
+      </a>
+    </p>
+  </div>
+</div>
